@@ -1,233 +1,182 @@
 import { useEffect, useState } from "react";
+import { ActivityIcon as Activity } from "@phosphor-icons/react/Pulse";
 import { ArrowLeft } from "@phosphor-icons/react/ArrowLeft";
 import { ArrowRight } from "@phosphor-icons/react/ArrowRight";
 import { Bell } from "@phosphor-icons/react/Bell";
 import { Broadcast } from "@phosphor-icons/react/Broadcast";
-import { CalendarDots } from "@phosphor-icons/react/CalendarDots";
-import { CaretRight } from "@phosphor-icons/react/CaretRight";
-import { ChartLineUp } from "@phosphor-icons/react/ChartLineUp";
+import { ChartBar } from "@phosphor-icons/react/ChartBar";
 import { Check } from "@phosphor-icons/react/Check";
 import { CheckCircle } from "@phosphor-icons/react/CheckCircle";
-import { Copy } from "@phosphor-icons/react/Copy";
+import { ClipboardText } from "@phosphor-icons/react/ClipboardText";
 import { CurrencyBtc } from "@phosphor-icons/react/CurrencyBtc";
-import { FunnelSimple } from "@phosphor-icons/react/FunnelSimple";
-import { Gauge } from "@phosphor-icons/react/Gauge";
+import { GearSix } from "@phosphor-icons/react/GearSix";
 import { House } from "@phosphor-icons/react/House";
 import { Lightning } from "@phosphor-icons/react/Lightning";
 import { LinkSimple } from "@phosphor-icons/react/LinkSimple";
-import { LockKey } from "@phosphor-icons/react/LockKey";
 import { MagnifyingGlass } from "@phosphor-icons/react/MagnifyingGlass";
-import { Moon } from "@phosphor-icons/react/Moon";
 import { Pause } from "@phosphor-icons/react/Pause";
 import { Plus } from "@phosphor-icons/react/Plus";
-import { Question } from "@phosphor-icons/react/Question";
+import { Power } from "@phosphor-icons/react/Power";
 import { Robot } from "@phosphor-icons/react/Robot";
-import { RocketLaunch } from "@phosphor-icons/react/RocketLaunch";
 import { ShieldCheck } from "@phosphor-icons/react/ShieldCheck";
 import { SlidersHorizontal } from "@phosphor-icons/react/SlidersHorizontal";
-import { Target } from "@phosphor-icons/react/Target";
-import { TrendUp } from "@phosphor-icons/react/TrendUp";
 import { Users } from "@phosphor-icons/react/Users";
 import { WarningCircle } from "@phosphor-icons/react/WarningCircle";
 
-const phases = [
-  { label: "Connections", note: "Signal + broker", icon: LinkSimple, range: [0, 5] },
-  { label: "Trading setup", note: "Pair, size, leverage", icon: SlidersHorizontal, range: [6, 6] },
-  { label: "Goals & risk", note: "Limits and strategies", icon: ShieldCheck, range: [7, 8] },
-  { label: "Filters", note: "News and schedule", icon: FunnelSimple, range: [9, 9] },
-  { label: "Review & activate", note: "Dry-run confirmation", icon: RocketLaunch, range: [10, 11] },
-];
-
-const exchanges = [
-  ["Binance", "BN", "#f0b90b"], ["Bybit", "BY", "#24262b"], ["Kraken", "KR", "#5f43d6"],
-  ["KuCoin", "KC", "#12a987"], ["Bitget", "BG", "#15a8c9"], ["BitMart", "BM", "#343434"],
+const steps = [
+  ["Create Bot", "Name and identify the bot", Plus],
+  ["Choose Signal Source", "TradingView, MT4, MT5, or other", Activity],
+  ["Connect Broker", "Authenticate and select account", LinkSimple],
+  ["Configure Strategy", "Asset, direction, amount, execution", SlidersHorizontal],
+  ["Set Risk Controls", "Limits, stops, advanced rules", ShieldCheck],
+  ["Review Setup", "Resolve blockers before activation", ClipboardText],
+  ["Activate Bot", "Confirm and launch", Power],
+  ["Monitor Performance", "Results, health, adjustments", ChartBar],
 ];
 
 function Button({ children, tone = "primary", icon: Icon, ...props }) {
   return <button className={`button button--${tone}`} {...props}>{Icon ? <Icon size={18} weight="bold" /> : null}<span>{children}</span></button>;
 }
 
-function Frame({ stage, children }) {
-  return <div className="app-frame">
-    <aside className="side-nav">
-      <div className="wordmark"><span className="wordmark__mark" /><b>TraderFrame</b></div>
-      <button className="create-bot"><Plus size={18} weight="bold" /> Create bot</button>
-      <nav aria-label="Primary navigation">
-        <span>Workspace</span>
-        <button><House size={19} /> Home</button>
-        <button><Users size={19} /> Copy trading</button>
-        <button className="is-active"><Robot size={19} /> My bots <em>5</em></button>
-        <button><ChartLineUp size={19} /> Analytics</button>
-        <button><CalendarDots size={19} /> Calendar</button>
-      </nav>
-      <div className="nav-spacer" />
-      <nav><button><Question size={19} /> Help center</button></nav>
-      <div className="profile"><span>AS</span><div><b>Alex Smith</b><small>Demo workspace</small></div><CaretRight size={15} /></div>
-    </aside>
-    <header className="top-nav">
-      <div className="search"><MagnifyingGlass size={17} /><input aria-label="Search" placeholder="Search TraderFrame" /></div>
-      <div className="mode"><button>Live</button><button className="is-active">Demo</button></div>
-      <button aria-label="Notifications"><Bell size={19} /></button><button aria-label="Theme"><Moon size={19} /></button>
-      <Button>Upgrade</Button>
-    </header>
-    <div className="content-shell">
-      {stage < 12 ? <div className="page-intro"><div><span className="eyebrow">NEW CRYPTO BOT</span><h1>Build your TradingView bot</h1><p>Connect the route, define the rules, then validate everything before activation.</p></div><div className="draft-pill"><span /> Draft saved</div></div> : null}
-      {children}
-    </div>
+function Shell({ step, children }) {
+  return <div className="shell">
+    <aside className="sidebar"><div className="brand"><span /><b>TraderFrame</b></div><button className="new-bot"><Plus size={18} /> New bot</button><nav><small>Workspace</small><button><House size={19} /> Overview</button><button><Users size={19} /> Copy trading</button><button className="active"><Robot size={19} /> Bots <em>5</em></button><button><ChartBar size={19} /> Analytics</button></nav><div className="sidebar-spacer" /><div className="profile"><span>AS</span><div><b>Alex Smith</b><small>Demo workspace</small></div></div></aside>
+    <header className="topbar"><div className="search"><MagnifyingGlass size={17} /><input aria-label="Search" placeholder="Search" /></div><span className="prototype-pill">Frontend prototype</span><button aria-label="Notifications"><Bell size={19} /></button><Button>Upgrade</Button></header>
+    <div className="page"><div className="page-heading"><div><span className="eyebrow">CREATE AUTOMATION</span><h1>{step === 7 ? "Bot performance" : "Create a trading bot"}</h1><p>{step === 7 ? "Monitor the live simulation and inspect operational edge states." : "Eight required checkpoints from setup to monitoring."}</p></div><span className="save-state"><i /> Draft saved locally</span></div>{children}</div>
   </div>;
 }
 
-function PhaseRail({ stage }) {
-  return <aside className="phase-rail"><div className="phase-progress"><span style={{ height: `${Math.min(100, Math.max(6, (stage / 11) * 100))}%` }} /></div>{phases.map((phase, index) => {
-    const Icon = phase.icon; const current = stage >= phase.range[0] && stage <= phase.range[1]; const done = stage > phase.range[1];
-    return <div className={`phase ${current ? "is-current" : ""} ${done ? "is-done" : ""}`} key={phase.label}><div className="phase__icon">{done ? <Check size={15} weight="bold" /> : <Icon size={18} />}</div><div><small>0{index + 1}</small><b>{phase.label}</b><span>{phase.note}</span></div></div>;
-  })}</aside>;
+function Progress({ step }) {
+  return <aside className="progress"><div className="progress-line"><i style={{ height: `${(step / 7) * 100}%` }} /></div>{steps.map(([name, note, Icon], index) => <div key={name} className={`progress-step ${index === step ? "current" : ""} ${index < step ? "done" : ""}`}><span>{index < step ? <Check size={14} weight="bold" /> : <Icon size={18} />}</span><div><small>STEP {String(index + 1).padStart(2, "0")}</small><b>{name}</b><em>{note}</em></div></div>)}</aside>;
 }
 
-function Summary({ stage }) {
-  const signalReady = stage > 2; const brokerReady = stage > 5; const configured = stage > 9;
-  return <aside className="summary-card">
-    <header><div><span className="eyebrow">LIVE SUMMARY</span><h3>QPOTC</h3></div><span className="demo-badge">Demo</span></header>
-    <div className="route-preview">
-      <div className={signalReady ? "ready" : ""}><Broadcast size={20} /><span><small>Signal</small><b>{signalReady ? "TradingView" : "Not connected"}</b></span>{signalReady ? <CheckCircle size={17} weight="fill" /> : null}</div>
-      <i /><div className={brokerReady ? "ready" : ""}><CurrencyBtc size={20} /><span><small>Broker</small><b>{brokerReady ? "Binance Futures" : "Not connected"}</b></span>{brokerReady ? <CheckCircle size={17} weight="fill" /> : null}</div>
-    </div>
-    <dl><div><dt>Market</dt><dd>{stage >= 6 ? "BTCUSDT" : "—"}</dd></div><div><dt>Order size</dt><dd>{stage >= 6 ? "0.01 BTC" : "—"}</dd></div><div><dt>Leverage</dt><dd>{stage >= 6 ? "15x Cross" : "—"}</dd></div><div><dt>Protection</dt><dd>{stage >= 7 ? "+50% / -50%" : "—"}</dd></div><div><dt>Filters</dt><dd>{configured ? "High impact" : "—"}</dd></div></dl>
-    <div className="summary-note"><ShieldCheck size={19} /><span><b>Frontend prototype</b><small>No keys, alerts, or orders leave this browser.</small></span></div>
-  </aside>;
+function DependencyPanel({ step, data }) {
+  const rows = [
+    ["Bot record", Boolean(data.name)],
+    ["Signal verified", data.signalConnected],
+    ["Broker verified", data.brokerConnected],
+    ["Strategy valid", step > 3],
+    ["Risk rules valid", step > 4],
+  ];
+  return <aside className="dependency-panel"><header><span className="eyebrow">DEPENDENCIES</span><h3>Activation readiness</h3></header><div className="dependency-list">{rows.map(([label, ok], index) => <div key={label}><span className={ok ? "ok" : step === index ? "current" : ""}>{ok ? <Check size={12} /> : index + 1}</span><b>{label}</b><small>{ok ? "Ready" : "Required"}</small></div>)}</div><div className="constraint-note"><WarningCircle size={19} /><span><b>Execution order is enforced</b><small>Later steps remain blocked until their upstream dependency succeeds.</small></span></div><div className="dev-note"><b>Developer feedback focus</b><p>Check validation timing, retry behavior, locked-step clarity, and which values must persist between steps.</p></div></aside>;
 }
 
-function StepCard({ eyebrow, title, description, children, back, next, nextLabel = "Continue", nextDisabled = false, nextIcon = ArrowRight }) {
-  return <section className="step-card"><header><span className="eyebrow">{eyebrow}</span><h2>{title}</h2><p>{description}</p></header><div className="step-card__body">{children}</div><footer>{back ? <Button tone="ghost" icon={ArrowLeft} onClick={back}>Back</Button> : <span />}<Button icon={nextIcon} onClick={next} disabled={nextDisabled}>{nextLabel}</Button></footer></section>;
+function Layout({ step, data, children }) {
+  return <div className="workflow-layout"><Progress step={step} /><main>{children}</main><DependencyPanel step={step} data={data} /></div>;
 }
 
-function ProviderStep({ selected, onSelect, next }) {
-  const options = [["TradingView", "Alert webhooks", Broadcast], ["Copy Trade", "Mirror a strategy", TrendUp], ["MetaTrader 5", "Expert advisor", Gauge]];
-  return <StepCard eyebrow="CONNECTIONS · SIGNAL" title="Where should signals come from?" description="Choose the source that tells this bot when to open or close a position." next={next} nextDisabled={selected !== "TradingView"} nextLabel="Use TradingView"><div className="choice-list">{options.map(([name, note, Icon]) => <button key={name} className={`${selected === name ? "is-selected" : ""} ${name !== "TradingView" ? "is-muted" : ""}`} onClick={() => name === "TradingView" && onSelect(name)}><span className="choice-icon"><Icon size={25} weight="duotone" /></span><span><b>{name}</b><small>{note}</small></span>{name === "TradingView" ? <em>Recommended</em> : <em>Later</em>}{selected === name ? <CheckCircle size={22} weight="fill" /> : null}</button>)}</div></StepCard>;
+function StepCard({ number, title, description, children, back, next, nextLabel = "Continue", nextDisabled = false, nextIcon = ArrowRight }) {
+  return <section className="step-card"><header><span>{String(number).padStart(2, "0")}</span><div><h2>{title}</h2><p>{description}</p></div></header><div className="step-body">{children}</div><footer>{back ? <Button tone="ghost" icon={ArrowLeft} onClick={back}>Back</Button> : <span />}<Button icon={nextIcon} onClick={next} disabled={nextDisabled}>{nextLabel}</Button></footer></section>;
 }
 
-function TradingViewStep({ back, next }) {
-  const [copied, setCopied] = useState(""); const copy = (value) => { setCopied(value); window.setTimeout(() => setCopied(""), 1000); };
-  return <StepCard eyebrow="CONNECTIONS · TRADINGVIEW" title="Add the TraderFrame webhook" description="Use these values in your TradingView alert. This MVP simulates the connection." back={back} next={next} nextLabel="I added the alert" nextIcon={LinkSimple}>
-    <div className="connection-banner"><span className="tv-badge">TV</span><div><b>TradingView alerts</b><small>Webhook receiver · QPOTC</small></div><span>Not verified</span></div>
-    <div className="instruction"><span>1</span><div><b>Paste the webhook URL</b><small>TradingView alert → Notifications → Webhook URL</small></div></div>
-    <div className="copy-box"><label>Webhook URL</label><code>https://autobotsignal.io/v1/tradingview</code><button onClick={() => copy("url")}><Copy size={17} />{copied === "url" ? "Copied" : "Copy"}</button></div>
-    <div className="instruction"><span>2</span><div><b>Paste the message payload</b><small>Keep the bot ID and TradingView variables unchanged.</small></div></div>
-    <div className="code-box"><code>{`{\n  "bot_id": "QPOTC",\n  "action": "buy",\n  "symbol": "{{ticker}}",\n  "price": "{{close}}"\n}`}</code><button onClick={() => copy("json")}><Copy size={17} />{copied === "json" ? "Copied" : "Copy JSON"}</button></div>
+function Field({ label, error, suffix, children, ...props }) {
+  return <label className={`field ${error ? "has-error" : ""}`}><span>{label}</span>{children || <div><input {...props} />{suffix ? <b>{suffix}</b> : null}</div>}{error ? <small><WarningCircle size={13} />{error}</small> : null}</label>;
+}
+
+function CreateStep({ data, setData, next }) {
+  const [error, setError] = useState("");
+  const submit = () => { if (!data.name.trim()) return setError("Bot name is required."); if (data.name.toLowerCase() === "grid runner") return setError("This name already exists. Choose a unique name."); setError(""); next(); };
+  return <StepCard number={1} title="Create your bot" description="Create the bot record first. Every later setting depends on this identity." next={submit} nextLabel="Create and continue">
+    <div className="intro-banner"><span><Robot size={30} weight="duotone" /></span><div><b>Start with a clear bot identity</b><small>The name is shown in alerts, orders, logs, and monitoring.</small></div></div>
+    <Field label="Bot name" error={error}><div><input aria-label="Bot name" value={data.name} placeholder="e.g. BTC Momentum" onChange={e => { setData({ ...data, name: e.target.value }); setError(""); }} /><span className="counter">{data.name.length}/32</span></div></Field>
+    <Field label="Description (optional)"><textarea aria-label="Description" value={data.description} placeholder="What should this bot do?" onChange={e => setData({ ...data, description: e.target.value })} /></Field>
+    <button className="edge-link" onClick={() => { setData({ ...data, name: "Grid Runner" }); setError(""); }}>Preview duplicate-name edge case</button>
   </StepCard>;
 }
 
-function VerifyStep({ kind, back, next }) {
-  const [state, setState] = useState("idle"); const signal = kind === "signal";
-  useEffect(() => { if (state !== "checking") return; const id = window.setTimeout(() => setState("ready"), 900); return () => window.clearTimeout(id); }, [state]);
-  const checks = signal ? ["Webhook token", "Payload format", "Sample alert"] : ["API credentials", "Trading permission", "Futures access", "Account health"];
-  return <StepCard eyebrow={`CONNECTIONS · ${signal ? "TRADINGVIEW" : "BINANCE"}`} title={state === "ready" ? "Connection verified" : `Verify ${signal ? "TradingView" : "Binance"}`} description={state === "ready" ? `${signal ? "TradingView alerts" : "Binance Futures"} are ready for this demo bot.` : "Run every required connection check before continuing."} back={state === "checking" ? undefined : back} next={state === "ready" ? next : () => setState("checking")} nextLabel={state === "idle" ? "Run connection check" : state === "checking" ? "Checking…" : "Continue"} nextDisabled={state === "checking"} nextIcon={state === "ready" ? ArrowRight : Lightning}>
-    <div className={`verification-hero ${state}`}><div>{state === "ready" ? <CheckCircle size={38} weight="fill" /> : <Lightning size={34} weight="duotone" />}</div><span><b>{state === "idle" ? "Ready to test" : state === "checking" ? "Running secure checks" : "All checks passed"}</b><small>{state === "checking" ? "Please keep this page open." : "No live account action will be taken."}</small></span></div>
-    <div className="check-stack">{checks.map((item, index) => { const passed = state === "ready" || (state === "checking" && index < 2); return <div key={item}><span className={passed ? "passed" : ""}>{passed ? <Check size={13} weight="bold" /> : index + 1}</span><b>{item}</b><small>{passed ? "Passed" : state === "checking" ? "Checking" : "Pending"}</small></div>; })}</div>
+function SignalStep({ data, setData, back, next }) {
+  const [status, setStatus] = useState(data.signalConnected ? "success" : "idle"); const [fail, setFail] = useState(false);
+  useEffect(() => { if (status !== "checking") return; const id = setTimeout(() => setStatus(fail ? "error" : "success"), 850); return () => clearTimeout(id); }, [status, fail]);
+  useEffect(() => { if (status === "success") setData(current => current.signalConnected ? current : { ...current, signalConnected: true }); }, [status, setData]);
+  const sources = [["TradingView", "Webhook alerts", Broadcast], ["MT5", "Expert Advisor", Activity], ["MT4", "Legacy terminal", Activity], ["Other", "Custom webhook", LinkSimple]];
+  return <StepCard number={2} title="Choose and verify a signal source" description="A source must deliver a valid test signal before broker setup unlocks." back={back} next={next} nextDisabled={status !== "success"} nextLabel="Continue to broker">
+    <div className="choice-grid four">{sources.map(([name, note, Icon]) => <button key={name} className={data.source === name ? "selected" : ""} onClick={() => { setData({ ...data, source: name, signalConnected: false }); setStatus("idle"); }}><Icon size={23} /><b>{name}</b><small>{note}</small>{data.source === name ? <CheckCircle size={19} weight="fill" /> : null}</button>)}</div>
+    {data.source ? <><div className="form-grid"><Field label={data.source === "TradingView" || data.source === "Other" ? "Webhook URL" : "Terminal ID"} defaultValue={data.source === "TradingView" ? "https://signal.traderframe.dev/bot" : "TF-DEMO-1024"} /><Field label="Verification token" defaultValue="TF-TEST-83A2" /></div><label className="test-toggle"><input type="checkbox" checked={fail} onChange={e => setFail(e.target.checked)} /> Simulate signal timeout</label><ConnectionState status={status} idle="Send test signal" checking="Waiting for signal…" success="Test signal received" error="No signal received within 30 seconds" onAction={() => setStatus("checking")} /></> : <EmptyState icon={Broadcast} title="Select a signal source" text="Connection fields will appear after you make a selection." />}
   </StepCard>;
 }
 
-function BrokerStep({ selected, onSelect, back, next }) {
-  return <StepCard eyebrow="CONNECTIONS · BROKER" title="Choose a crypto broker" description="Select the exchange that will receive approved orders. Binance is used for this MVP." back={back} next={next} nextLabel="Connect Binance" nextDisabled={selected !== "Binance"} nextIcon={LinkSimple}>
-    <div className="exchange-grid">{exchanges.map(([name, initials, color]) => <button key={name} onClick={() => name === "Binance" && onSelect(name)} className={`${selected === name ? "is-selected" : ""} ${name !== "Binance" ? "is-muted" : ""}`}><span style={{ color, borderColor: `${color}55`, background: `${color}12` }}>{initials}</span><b>{name}</b><small>{name === "Binance" ? "Futures supported" : "Available later"}</small>{selected === name ? <CheckCircle size={20} weight="fill" /> : null}</button>)}</div>
-    <div className="safety-callout"><ShieldCheck size={22} /><span><b>Trading permission only</b><small>Withdrawal permission must stay disabled for every automated trading connection.</small></span></div>
+function ConnectionState({ status, idle, checking, success, error, onAction }) {
+  if (status === "success") return <div className="state-box success"><CheckCircle size={22} weight="fill" /><span><b>{success}</b><small>Dependency verified. You can continue.</small></span></div>;
+  if (status === "error") return <div className="state-box error"><WarningCircle size={22} weight="fill" /><span><b>{error}</b><small>Check the configuration, then retry.</small></span><Button tone="ghost" onClick={onAction}>Retry</Button></div>;
+  return <div className={`state-box ${status}`}><Lightning size={22} /><span><b>{status === "checking" ? checking : "Verification required"}</b><small>{status === "checking" ? "Keep this screen open." : "This frontend check simulates the backend handshake."}</small></span><Button tone="ghost" onClick={onAction} disabled={status === "checking"}>{status === "checking" ? "Checking…" : idle}</Button></div>;
+}
+
+function EmptyState({ icon: Icon, title, text }) { return <div className="empty-state"><Icon size={31} weight="duotone" /><b>{title}</b><small>{text}</small></div>; }
+
+function BrokerStep({ data, setData, back, next }) {
+  const [status, setStatus] = useState(data.brokerConnected ? "success" : "idle"); const [fail, setFail] = useState(false);
+  useEffect(() => { if (status !== "checking") return; const id = setTimeout(() => setStatus(fail ? "error" : "success"), 850); return () => clearTimeout(id); }, [status, fail]);
+  useEffect(() => { if (status === "success") setData(current => current.brokerConnected ? current : { ...current, brokerConnected: true }); }, [status, setData]);
+  return <StepCard number={3} title="Connect a broker account" description="Select a broker, authenticate, then choose the exact execution account." back={back} next={next} nextDisabled={status !== "success" || !data.account} nextLabel="Use this account">
+    <div className="choice-grid"><button className={data.broker === "Binance" ? "selected" : ""} onClick={() => { setData({ ...data, broker: "Binance", brokerConnected: false }); setStatus("idle"); }}><CurrencyBtc size={23} /><b>Binance</b><small>Spot & Futures</small>{data.broker === "Binance" ? <CheckCircle size={19} weight="fill" /> : null}</button><button className={data.broker === "Kraken" ? "selected" : ""} onClick={() => { setData({ ...data, broker: "Kraken", brokerConnected: false }); setStatus("idle"); }}><CurrencyBtc size={23} /><b>Kraken</b><small>Spot trading</small>{data.broker === "Kraken" ? <CheckCircle size={19} weight="fill" /> : null}</button><button disabled><Plus size={23} /><b>More brokers</b><small>Coming later</small></button></div>
+    {data.broker ? <><div className="form-grid"><Field label="API key" defaultValue="TF-DEMO-KEY" /><Field label="API secret"><div><input aria-label="API secret" type="password" defaultValue="prototype-secret" /></div></Field></div><label className="test-toggle"><input type="checkbox" checked={fail} onChange={e => setFail(e.target.checked)} /> Simulate invalid API credentials</label><ConnectionState status={status} idle="Authenticate broker" checking="Authenticating…" success={`${data.broker} authenticated`} error="Authentication failed: invalid API credentials" onAction={() => setStatus("checking")} />{status === "success" ? <Field label="Execution account"><select aria-label="Execution account" value={data.account} onChange={e => setData({ ...data, account: e.target.value })}><option value="">Select an account</option><option value="Demo Futures · 8,420 USDT">Demo Futures · 8,420 USDT</option><option value="Demo Spot · 1.24 BTC">Demo Spot · 1.24 BTC</option></select></Field> : null}</> : <EmptyState icon={LinkSimple} title="Choose a broker" text="Authentication and account selection appear next." />}
   </StepCard>;
 }
 
-function CredentialsStep({ back, next }) {
-  return <StepCard eyebrow="CONNECTIONS · BINANCE" title="Authorize the demo account" description="Enter restricted API credentials and confirm the allowed permissions." back={back} next={next} nextLabel="Verify connection" nextIcon={ShieldCheck}>
-    <div className="connection-banner"><span className="binance-badge">BN</span><div><b>Binance Futures</b><small>Demo / Testnet · BTCUSDT</small></div><span>Trading only</span></div>
-    <div className="form-grid"><label className="field"><span>API key</span><input aria-label="API key" defaultValue="TF-DEMO-BINANCE-01" /></label><label className="field"><span>API secret</span><input aria-label="API secret" type="password" defaultValue="prototype-secret" /></label></div>
-    <div className="permission-list"><div><CheckCircle size={20} weight="fill" /><span><b>Read balances and positions</b><small>Required for margin and reconciliation.</small></span></div><div><CheckCircle size={20} weight="fill" /><span><b>Place and manage trades</b><small>Required for submit, cancel, and close.</small></span></div><div className="is-blocked"><LockKey size={20} weight="fill" /><span><b>Withdrawals disabled</b><small>This permission must never be enabled.</small></span></div></div>
+function StrategyStep({ data, setData, back, next }) {
+  const [submitted, setSubmitted] = useState(false); const amount = Number(data.amount); const error = submitted && (!amount || amount > 1) ? (!amount ? "Enter a trade amount greater than zero." : "Amount exceeds the available demo balance.") : "";
+  const submit = () => { setSubmitted(true); if (amount > 0 && amount <= 1) next(); };
+  return <StepCard number={4} title="Configure the strategy" description="Define what to trade and how every valid signal becomes an order." back={back} next={submit} nextLabel="Save strategy">
+    <div className="form-grid"><Field label="Asset"><select aria-label="Asset" value={data.asset} onChange={e => setData({ ...data, asset: e.target.value })}><option>BTCUSDT</option><option>ETHUSDT</option><option>SOLUSDT</option></select></Field><Field label="Direction"><div className="segments">{["Long", "Short", "Both"].map(x => <button key={x} className={data.direction === x ? "selected" : ""} onClick={() => setData({ ...data, direction: x })}>{x}</button>)}</div></Field></div>
+    <div className="form-grid"><Field label="Trade amount" suffix="BTC" error={error}><div><input aria-label="Trade amount" value={data.amount} onChange={e => { setData({ ...data, amount: e.target.value }); setSubmitted(false); }} /><b>BTC</b></div></Field><Field label="Execution"><select aria-label="Execution" value={data.execution} onChange={e => setData({ ...data, execution: e.target.value })}><option>Market</option><option>Limit</option><option>Next candle</option></select></Field></div>
+    <div className="estimate"><span><small>Estimated order value</small><b>{amount && amount <= 1 ? `${(amount * 112805).toLocaleString(undefined, { maximumFractionDigits: 2 })} USDT` : "Unavailable"}</b></span><span><small>Available balance</small><b>8,420 USDT</b></span></div>
+    <button className="edge-link" onClick={() => { setData({ ...data, amount: "2.5" }); setSubmitted(true); }}>Preview insufficient-balance edge case</button>
   </StepCard>;
 }
 
-function Field({ label, suffix, children, ...props }) {
-  return <label className="field"><span>{label}</span>{children || <div><input {...props} />{suffix ? <b>{suffix}</b> : null}</div>}</label>;
-}
-
-function TradingStep({ back, next }) {
-  const [execution, setExecution] = useState("Market"); const [margin, setMargin] = useState("Cross"); const [leverage, setLeverage] = useState(15);
-  return <StepCard eyebrow="TRADING SETUP" title="Define each trade" description="Set the market, execution method, position size, and closing controls." back={back} next={next}>
-    <div className="section-title"><h3>Trade settings</h3><span>Required</span></div><div className="form-grid"><Field label="Bot name" defaultValue="QPOTC" /><Field label="Trading pair"><select aria-label="Trading pair" defaultValue="BTCUSDT"><option>BTCUSDT</option><option>ETHUSDT</option><option>SOLUSDT</option></select></Field></div>
-    <label className="field"><span>Signal execution</span><div className="segmented">{["Market", "Limit", "Next minute"].map(x => <button key={x} className={execution === x ? "is-active" : ""} onClick={() => setExecution(x)}>{execution === x ? <Check size={13} /> : null}{x}</button>)}</div></label>
-    <label className="field"><span>Margin mode</span><div className="segmented">{["Cross", "Isolated"].map(x => <button key={x} className={margin === x ? "is-active" : ""} onClick={() => setMargin(x)}>{margin === x ? <Check size={13} /> : null}{x}</button>)}</div></label>
-    <label className="field"><span>Leverage <strong>{leverage}x</strong></span><input aria-label="Leverage" className="range" type="range" min="1" max="75" value={leverage} onChange={e => setLeverage(e.target.value)} /></label>
-    <div className="form-grid"><Field label="Trading size" defaultValue="0.01" suffix="BTC" /><Field label="Order value" defaultValue="1,594.82" suffix="USDT" /></div>
-    <div className="section-title"><h3>Closing management</h3></div><div className="form-grid"><Field label="Take profit" defaultValue="50" suffix="% ROI" /><Field label="Stop loss" defaultValue="-50" suffix="% ROI" /></div>
+function RiskStep({ data, setData, back, next }) {
+  const [submitted, setSubmitted] = useState(false); const sl = Number(data.stopLoss); const daily = Number(data.dailyLoss); const invalid = sl <= 0 || sl > 20 || daily <= 0;
+  const submit = () => { setSubmitted(true); if (!invalid) next(); };
+  return <StepCard number={5} title="Set risk controls" description="Protection rules are mandatory and run before every order submission." back={back} next={submit} nextLabel="Validate risk controls">
+    <div className="risk-banner"><ShieldCheck size={25} /><span><b>Hard stop rules</b><small>These controls cannot be bypassed by an incoming signal.</small></span></div>
+    <div className="form-grid"><Field label="Stop loss" suffix="%" error={submitted && (sl <= 0 || sl > 20) ? "Enter a value between 0.1% and 20%." : ""}><div><input aria-label="Stop loss" value={data.stopLoss} onChange={e => { setData({ ...data, stopLoss: e.target.value }); setSubmitted(false); }} /><b>%</b></div></Field><Field label="Take profit" suffix="%"><div><input aria-label="Take profit" value={data.takeProfit} onChange={e => setData({ ...data, takeProfit: e.target.value })} /><b>%</b></div></Field></div>
+    <div className="form-grid"><Field label="Daily loss limit" suffix="USDT" error={submitted && daily <= 0 ? "A positive daily loss limit is required." : ""}><div><input aria-label="Daily loss limit" value={data.dailyLoss} onChange={e => { setData({ ...data, dailyLoss: e.target.value }); setSubmitted(false); }} /><b>USDT</b></div></Field><Field label="Maximum open positions"><select aria-label="Maximum open positions" defaultValue="1"><option>1</option><option>2</option><option>3</option></select></Field></div>
+    <label className="advanced-rule"><input type="checkbox" checked={data.newsPause} onChange={e => setData({ ...data, newsPause: e.target.checked })} /><span><b>Pause around high-impact news</b><small>Block orders five minutes before and after an event.</small></span></label>
+    <button className="edge-link" onClick={() => { setData({ ...data, stopLoss: "0", dailyLoss: "0" }); setSubmitted(true); }}>Preview invalid-risk edge case</button>
   </StepCard>;
 }
 
-function GoalsStep({ back, next }) {
-  return <StepCard eyebrow="GOALS & RISK" title="Set bot-level goals" description="Stop new execution when profit or loss reaches the threshold." back={back} next={next}>
-    <div className="goal-hero"><Target size={31} weight="duotone" /><span><b>Reconciled balance rules</b><small>Goals are checked against the latest confirmed account state.</small></span></div>
-    <div className="limit-card"><div><span className="limit-icon gain"><TrendUp size={20} /></span><span><b>Profit goal</b><small>Stop after reaching</small></span></div><Field label="Amount" defaultValue="500" suffix="USDT" /></div>
-    <div className="limit-card"><div><span className="limit-icon loss"><TrendUp size={20} /></span><span><b>Loss limit</b><small>Stop after losing</small></span></div><Field label="Amount" defaultValue="200" suffix="USDT" /></div>
+function ReviewStep({ data, back, next, edit }) {
+  const groups = [["Bot", data.name, data.description || "No description"], ["Signal", data.source, "Test signal verified"], ["Broker", data.broker, data.account], ["Strategy", `${data.direction} ${data.asset}`, `${data.amount} BTC · ${data.execution}`], ["Risk", `SL ${data.stopLoss}% · TP ${data.takeProfit}%`, `Daily limit ${data.dailyLoss} USDT`]];
+  return <StepCard number={6} title="Review the complete setup" description="Everything below must remain valid at activation time." back={back} next={next} nextLabel="Confirm setup">
+    <div className="review-grid">{groups.map(([title, value, note], index) => <div key={title}><span><CheckCircle size={19} weight="fill" /><small>{title}</small></span><b>{value}</b><em>{note}</em><button onClick={() => edit(index === 0 ? 0 : index === 1 ? 1 : index === 2 ? 2 : index === 3 ? 3 : 4)}>Edit</button></div>)}</div>
+    <div className="state-box success"><CheckCircle size={22} weight="fill" /><span><b>All dependencies passed</b><small>Revalidation will run once more during activation.</small></span></div>
   </StepCard>;
 }
 
-function RiskStep({ back, next }) {
-  const [compound, setCompound] = useState(true); const [martingale, setMartingale] = useState(false);
-  return <StepCard eyebrow="GOALS & RISK" title="Choose risk strategies" description="Apply progressive sizing only within the limits you reviewed." back={back} next={next}>
-    <div className="strategy-row"><span className="strategy-icon"><Lightning size={22} /></span><span><b>Compound strategy</b><small>Use eligible profit on the next signal.</small></span><button aria-label="Toggle compound strategy" className={`switch ${compound ? "on" : ""}`} onClick={() => setCompound(!compound)}><i /></button></div>
-    {compound ? <div className="form-grid nested"><Field label="Profit turnover" defaultValue="100" suffix="%" /><Field label="Compounding steps" defaultValue="2" suffix="steps" /></div> : null}
-    <div className="strategy-row"><span className="strategy-icon"><TrendUp size={22} /></span><span><b>Martingale management</b><small>Increase size after a losing result.</small></span><button aria-label="Toggle martingale management" className={`switch ${martingale ? "on" : ""}`} onClick={() => setMartingale(!martingale)}><i /></button></div>
-    {martingale ? <div className="form-grid nested"><Field label="Multiplier" defaultValue="2" suffix="x" /><Field label="Maximum steps" defaultValue="3" suffix="steps" /></div> : null}
-    <div className="warning-callout"><WarningCircle size={21} /><span><b>Progressive sizing increases downside</b><small>The 200 USDT loss limit remains your bot-level circuit breaker.</small></span></div>
+function ActivateStep({ data, back, next }) {
+  const [confirmed, setConfirmed] = useState(false); const [fail, setFail] = useState(false); const [status, setStatus] = useState("idle");
+  useEffect(() => { if (status !== "checking") return; const id = setTimeout(() => { if (fail) setStatus("error"); else { setStatus("success"); setTimeout(next, 500); } }, 900); return () => clearTimeout(id); }, [status, fail]);
+  return <StepCard number={7} title={`Activate ${data.name}`} description="Activation performs a final dependency check, then starts the monitoring session." back={status === "checking" ? undefined : back} next={() => setStatus("checking")} nextLabel={status === "checking" ? "Activating…" : status === "error" ? "Retry activation" : "Activate bot"} nextDisabled={!confirmed || status === "checking"} nextIcon={Power}>
+    <div className="activation-card"><Power size={34} weight="duotone" /><div><b>Ready to launch in Demo</b><small>{data.source} → {data.broker} · {data.asset}</small></div></div>
+    <div className="activation-facts"><span><small>Account</small><b>{data.account}</b></span><span><small>Maximum order</small><b>{data.amount} BTC</b></span><span><small>Hard stop</small><b>{data.dailyLoss} USDT/day</b></span></div>
+    <label className="confirm"><input type="checkbox" checked={confirmed} onChange={e => setConfirmed(e.target.checked)} /><span><b>I reviewed the account, position size, and risk limits.</b><small>This acknowledgement is required and should be audit logged by the backend.</small></span></label>
+    <label className="test-toggle"><input type="checkbox" checked={fail} onChange={e => setFail(e.target.checked)} /> Simulate activation service failure</label>
+    {status === "error" ? <div className="state-box error"><WarningCircle size={22} weight="fill" /><span><b>Activation failed</b><small>The setup is preserved. Retry without re-entering data.</small></span></div> : status === "checking" ? <div className="state-box checking"><Lightning size={22} /><span><b>Revalidating dependencies…</b><small>Signal, broker, strategy, and risk checks are running.</small></span></div> : null}
   </StepCard>;
 }
 
-function FiltersStep({ back, next }) {
-  const [impact, setImpact] = useState("High");
-  return <StepCard eyebrow="FILTERS" title="Choose when the bot can trade" description="Pause execution around market events and outside the approved schedule." back={back} next={next} nextLabel="Save and review">
-    <div className="section-title"><h3>News filter</h3><span>ForexFactory calendar</span></div><label className="field"><span>Pause for impact level</span><div className="segmented">{["High", "Medium", "Low"].map(x => <button key={x} className={impact === x ? "is-active" : ""} onClick={() => setImpact(x)}>{impact === x ? <Check size={13} /> : null}{x}</button>)}</div></label>
-    <div className="form-grid"><Field label="Pause before" defaultValue="5" suffix="min" /><Field label="Resume after" defaultValue="5" suffix="min" /></div>
-    <div className="section-title"><h3>Trading schedule</h3></div><div className="form-grid triple"><Field label="Trading date" type="date" defaultValue="2026-09-08" /><Field label="Start time" type="time" defaultValue="00:00" /><Field label="End time" type="time" defaultValue="23:59" /></div>
-    <div className="summary-note wide"><FunnelSimple size={20} /><span><b>Filtered signals stay visible</b><small>They appear in the journal but are never submitted to Binance.</small></span></div>
-  </StepCard>;
-}
-
-function ReviewStep({ back, next }) {
-  return <StepCard eyebrow="REVIEW & ACTIVATE" title="Review the execution route" description="Check the route, permissions, sizing, and protections before the final confirmation." back={back} next={next} nextLabel="Continue to activation" nextIcon={RocketLaunch}>
-    <div className="review-route"><div><Broadcast size={25} /><span><small>Signal</small><b>TradingView</b></span></div><ArrowRight size={20} /><div><Robot size={25} /><span><small>Bot</small><b>QPOTC</b></span></div><ArrowRight size={20} /><div><CurrencyBtc size={25} /><span><small>Broker</small><b>Binance</b></span></div></div>
-    <div className="review-grid"><div><small>Market & execution</small><b>BTCUSDT · Market</b><span>0.01 BTC · Cross · 15x</span></div><div><small>Position protection</small><b>TP +50% ROI</b><span>SL -50% ROI</span></div><div><small>Bot goals</small><b>+500 / -200 USDT</b><span>Compound · 2 steps</span></div><div><small>Trading filters</small><b>High impact news</b><span>00:00–23:59</span></div></div>
-    <div className="dry-run"><CheckCircle size={24} weight="fill" /><span><b>Dry-run passed</b><small>The sample alert was validated. No real order was placed.</small></span></div>
-  </StepCard>;
-}
-
-function ActivationStep({ back, next }) {
-  const [confirmed, setConfirmed] = useState(false);
-  return <StepCard eyebrow="FINAL CONFIRMATION" title="Activate QPOTC?" description="The bot will listen for TradingView alerts and route approved demo orders to Binance." back={back} next={next} nextLabel="Activate bot" nextIcon={RocketLaunch} nextDisabled={!confirmed}>
-    <div className="activation-hero"><RocketLaunch size={36} weight="duotone" /><div><b>Ready for demo execution</b><small>TradingView → Binance Futures · BTCUSDT</small></div></div>
-    <div className="activation-facts"><div><small>Environment</small><b>Demo / Testnet</b></div><div><small>Maximum order</small><b>0.01 BTC</b></div><div><small>Leverage</small><b>15x Cross</b></div></div>
-    <label className="confirm-box"><input type="checkbox" checked={confirmed} onChange={e => setConfirmed(e.target.checked)} /><span><b>I reviewed the exchange account, size, leverage, and stop controls.</b><small>This confirmation is required before activation.</small></span></label>
-  </StepCard>;
-}
-
-function ActiveDashboard({ edit }) {
-  return <div className="active-page"><div className="active-header"><div><span className="active-pill">Active · Demo</span><h1>QPOTC Bot Overview</h1><p>TradingView → Binance Futures · BTCUSDT</p></div><div><Button tone="ghost" onClick={edit}>Edit as draft</Button><Button icon={Pause}>Pause bot</Button></div></div>
-    <div className="metric-grid"><div><small>Realized P&amp;L</small><b className="positive">+$216.30</b><span>Last 7 days</span></div><div><small>Win rate</small><b>64%</b><span>8 wins · 1 loss</span></div><div><small>Open position</small><b>BTCUSDT</b><span>Long · 0.01 BTC</span></div><div><small>Connection</small><b className="positive">Healthy</b><span>Updated just now</span></div></div>
-    <div className="dashboard-grid"><section className="position-panel"><header><div><CurrencyBtc size={24} /><span><b>BTCUSDT</b><small>Perpetual · Cross 15x</small></span></div><span className="active-pill">Open long</span></header><div className="position-stats"><span><small>Entry price</small><b>112,805.50</b></span><span><small>Mark price</small><b>113,124.22</b></span><span><small>Margin</small><b>106.32 USDT</b></span><span><small>Unrealized P&amp;L</small><b className="positive">+31.87 USDT</b></span></div><div className="price-band"><span><i className="tp" />TP 113,754.40</span><span><i className="mark" />Current 113,124.22</span><span><i className="sl" />SL 112,805.50</span></div><footer><Button tone="ghost">Edit TP/SL</Button><Button tone="danger">Close position</Button></footer></section>
-    <section className="execution-panel"><header><h3>Latest execution</h3><span>2 sec ago</span></header>{[["Signal received", "TradingView alert #TV-4921"], ["Risk approved", "All rules passed"], ["Submitted", "Client order TF-8401"], ["Filled", "0.01 BTC @ 112,805.50"]].map(([name, note]) => <div className="execution-row" key={name}><span><Check size={12} weight="bold" /></span><div><b>{name}</b><small>{note}</small></div></div>)}</section></div>
-    <section className="activity-table"><header><h3>Incoming signals &amp; orders</h3><button>View all activity <ArrowRight size={15} /></button></header><div className="table-row table-head"><span>Time</span><span>Signal</span><span>Order state</span><span>Size</span><span>Price</span><span>P&amp;L</span></div>{[["12:46:02", "Buy BTCUSDT", "Filled", "0.01 BTC", "112,805.50", "+31.87"], ["11:18:44", "Close BTCUSDT", "Filled", "0.01 BTC", "111,942.20", "+79.74"], ["09:04:11", "Buy BTCUSDT", "Filtered", "—", "—", "—"]].map(row => <div className="table-row" key={row[0]}>{row.map((cell, index) => <span className={index === 5 && cell.startsWith("+") ? "positive" : ""} key={index}>{cell}</span>)}</div>)}</section>
+function MonitorStep({ data, edit }) {
+  const [paused, setPaused] = useState(false); const [disconnected, setDisconnected] = useState(false); const [empty, setEmpty] = useState(false);
+  return <div className="monitor"><header><div><span className={`live-pill ${paused || disconnected ? "warning" : ""}`}>{disconnected ? "Connection lost" : paused ? "Paused" : "Active · Demo"}</span><h2>{data.name}</h2><p>{data.source} → {data.broker} · {data.asset}</p></div><div><Button tone="ghost" icon={GearSix} onClick={() => edit(3)}>Adjust strategy</Button><Button icon={paused ? Power : Pause} onClick={() => setPaused(!paused)}>{paused ? "Resume bot" : "Pause bot"}</Button></div></header>
+    {disconnected ? <div className="disconnect-banner"><WarningCircle size={22} /><span><b>Broker connection interrupted</b><small>New signals are queued and no orders will be submitted until reconnection succeeds.</small></span><Button tone="ghost" onClick={() => setDisconnected(false)}>Reconnect</Button></div> : null}
+    <div className="metric-grid"><div><small>Realized P&amp;L</small><b className="positive">+$216.30</b><span>Last 7 days</span></div><div><small>Win rate</small><b>{empty ? "—" : "64%"}</b><span>{empty ? "No completed trades" : "8 wins · 1 loss"}</span></div><div><small>Open position</small><b>{empty ? "None" : "BTCUSDT"}</b><span>{empty ? "Waiting for signal" : "Long · 0.01 BTC"}</span></div><div><small>Connection</small><b className={disconnected ? "negative" : "positive"}>{disconnected ? "Offline" : "Healthy"}</b><span>Checked just now</span></div></div>
+    {empty ? <EmptyState icon={ChartBar} title="No execution activity yet" text="The bot is active and waiting for its first valid signal." /> : <div className="monitor-grid"><section><header><h3>Latest execution</h3><span>2 sec ago</span></header>{[["Signal received", "TradingView alert #TV-4921"], ["Risk approved", "All hard stops passed"], ["Order filled", "0.01 BTC @ 112,805.50"]].map(([title, note]) => <div className="timeline-row" key={title}><span><Check size={12} /></span><div><b>{title}</b><small>{note}</small></div></div>)}</section><section><header><h3>Risk health</h3><ShieldCheck size={20} /></header><div className="risk-meter"><i style={{ width: "28%" }} /></div><div className="risk-data"><span><small>Daily loss used</small><b>56 / {data.dailyLoss} USDT</b></span><span><small>Open positions</small><b>1 / 1</b></span><span><small>Next news pause</small><b>14:25 UTC</b></span></div></section></div>}
+    <div className="state-tools"><span><b>Frontend edge-state preview</b><small>Use these switches during developer feedback.</small></span><label><input type="checkbox" checked={disconnected} onChange={e => setDisconnected(e.target.checked)} /> Connection loss</label><label><input type="checkbox" checked={empty} onChange={e => setEmpty(e.target.checked)} /> Empty activity</label></div>
   </div>;
 }
 
 export function App() {
-  const [stage, setStage] = useState(0); const [provider, setProvider] = useState(""); const [broker, setBroker] = useState("");
-  const next = () => setStage(value => Math.min(12, value + 1)); const back = () => setStage(value => Math.max(0, value - 1));
+  const [step, setStep] = useState(0); const [data, setData] = useState({ name: "", description: "", source: "", signalConnected: false, broker: "", brokerConnected: false, account: "", asset: "BTCUSDT", direction: "Long", amount: "0.01", execution: "Market", stopLoss: "2", takeProfit: "4", dailyLoss: "200", newsPause: true });
+  const next = () => setStep(value => Math.min(7, value + 1)); const back = () => setStep(value => Math.max(0, value - 1));
   let content;
-  if (stage === 0) content = <ProviderStep selected={provider} onSelect={setProvider} next={next} />;
-  else if (stage === 1) content = <TradingViewStep back={back} next={next} />;
-  else if (stage === 2) content = <VerifyStep kind="signal" back={back} next={next} />;
-  else if (stage === 3) content = <BrokerStep selected={broker} onSelect={setBroker} back={back} next={next} />;
-  else if (stage === 4) content = <CredentialsStep back={back} next={next} />;
-  else if (stage === 5) content = <VerifyStep kind="broker" back={back} next={next} />;
-  else if (stage === 6) content = <TradingStep back={back} next={next} />;
-  else if (stage === 7) content = <GoalsStep back={back} next={next} />;
-  else if (stage === 8) content = <RiskStep back={back} next={next} />;
-  else if (stage === 9) content = <FiltersStep back={back} next={next} />;
-  else if (stage === 10) content = <ReviewStep back={back} next={next} />;
-  else if (stage === 11) content = <ActivationStep back={back} next={next} />;
-  return <Frame stage={stage}>{stage === 12 ? <ActiveDashboard edit={() => setStage(6)} /> : <div className="setup-layout"><PhaseRail stage={stage} /><main>{content}</main><Summary stage={stage} /></div>}</Frame>;
+  if (step === 0) content = <CreateStep data={data} setData={setData} next={next} />;
+  else if (step === 1) content = <SignalStep data={data} setData={setData} back={back} next={next} />;
+  else if (step === 2) content = <BrokerStep data={data} setData={setData} back={back} next={next} />;
+  else if (step === 3) content = <StrategyStep data={data} setData={setData} back={back} next={next} />;
+  else if (step === 4) content = <RiskStep data={data} setData={setData} back={back} next={next} />;
+  else if (step === 5) content = <ReviewStep data={data} back={back} next={next} edit={setStep} />;
+  else if (step === 6) content = <ActivateStep data={data} back={back} next={next} />;
+  else content = <MonitorStep data={data} edit={setStep} />;
+  return <Shell step={step}>{step === 7 ? content : <Layout step={step} data={data}>{content}</Layout>}</Shell>;
 }

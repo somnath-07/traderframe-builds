@@ -1,48 +1,46 @@
 **Findings**
 
-- No actionable P0, P1, or P2 issues remain in the structured-stepper prototype.
+- No actionable P0, P1, or P2 issues remain in the eight-step dependency-wizard prototype.
 
 **Evidence**
 
-- Source visual truth: Trader Frame - Somnath, Trading View flow, builder node `63:35606`, broker selector `63:36037`, and crypto settings `63:37807`.
-- Rendered implementation: Version 2 at `http://localhost:4174` in the Codex in-app browser.
-- Desktop comparison viewport: 1265 × 712 CSS px at 1× density. Source references and implementation were reviewed at comparable desktop scale.
-- Compact implementation viewport: 375 × 800 CSS px at 1× density. No density normalization was needed.
-- State coverage: provider selection, TradingView instructions, non-skippable TradingView check, Binance selection, restricted credentials, non-skippable Binance check, Trading, Goals, Risk, Filters, Review, activation acknowledgement, and active overview.
-- Browser result: no console warnings or errors during the complete click-through.
-- Full-view evidence: the implementation preserves the source's light TraderFrame shell, orange primary actions, off-white workspace, compact control density, bordered white surfaces, green success states, and crypto-specific route hierarchy.
-- Focused-region evidence: TradingView verification, Binance permission rows, risk confirmation, and active execution lifecycle were inspected individually because these are the backend-constrained states most likely to become ambiguous in a visual-only prototype.
+- Source visual truth path: `C:\Users\somwo\AppData\Local\Temp\codex-clipboard-534a2a0d-a626-41a0-aef1-4999cb8147d1.png`.
+- Source pixels: 901 × 370. The source is a flow/content specification, not a layout target; the user explicitly requested two different UI styles.
+- Implementation screenshot path/URL: `http://localhost:4174/`, captured in the Codex in-app browser at 1280 × 720 CSS px, device pixel ratio 1.25.
+- Compact implementation evidence: 768 × 900 CSS px in the same browser. No density normalization was required because the comparison judged content and hierarchy rather than pixel-identical layout.
+- State: initial Create Bot step plus a complete interactive run through Monitor Performance.
+- Full-view comparison evidence: the eight source steps appear in the same order as a persistent stepper, with an activation-readiness panel exposing backend dependencies.
+- Focused-region evidence: the stepper, dependency panel, connection checks, field errors, review cards, activation acknowledgement, and monitor failure/empty states were inspected individually. No photographic or branded image assets were required.
+- Primary interactions tested: duplicate name, signal timeout and retry, broker authentication failure and retry, account selection, insufficient balance, invalid risk limits, review, activation failure and retry, pause/resume, reconnect, and empty activity.
+- Browser console: no warnings or errors during the full click-through.
 
 **Required Fidelity Surfaces**
 
-- Fonts and typography: Manrope supplies the display hierarchy and DM Sans the dense product UI. Weights, line height, wrapping, and small-label contrast remain readable at desktop and compact widths.
-- Spacing and layout rhythm: the wide navigation, fixed header, five-phase progress rail, focused setup card, and persistent summary provide a deliberately different layout from Version 1 while retaining the source's spacing, radii, border, and elevation language.
-- Colors and visual tokens: off-white canvas, white surfaces, ink text, muted gray copy, TraderFrame orange, green verification, and red risk/close states are mapped through shared CSS tokens.
-- Image quality and asset fidelity: the product flow does not require photographic imagery. All interface symbols use the Phosphor vector icon library; no emoji, placeholder art, or custom inline SVG substitutes are present.
-- Copy and content: labels consistently describe TradingView alerts, Binance Futures, demo/testnet execution, trading-only API permissions, dry-run status, settings, risk controls, and reconciliation-aware filters.
+- Fonts and typography: clear sans-serif hierarchy, compact but legible step labels, stable wrapping, and appropriate display/control weights.
+- Spacing and layout rhythm: consistent navigation, stepper, card, and dependency-panel spacing at desktop; compact layout stacks the main card and dependency panel without clipping controls.
+- Colors and visual tokens: off-white workspace, white surfaces, TraderFrame orange actions, muted ink, green success, and red error states remain semantically consistent.
+- Image quality and asset fidelity: the source contains only interface icons; the implementation uses the Phosphor vector icon package and no emoji, placeholder art, CSS drawings, or raster approximations.
+- Copy and content: the exact eight source steps and their required sub-actions are represented, including TradingView/MT4/MT5/Other, broker authentication/account selection, strategy, risk, review, activation, and monitoring.
 
 **Comparison History**
 
-- Iteration 1 — [P2] Desktop primary action sat below the first viewport because the setup card had a 615 px minimum height. Fix: reduced the desktop minimum to 520 px. Post-fix evidence: the first-step selection and `Use TradingView` action are visible together at 1265 × 712.
-- Iteration 2 — [P2] Compact navigation profile text wrapped inside the collapsed 66 px rail and the phase strip exposed a native scrollbar. Fix: hid collapsed profile metadata and the phase-strip scrollbar while retaining horizontal scrolling. Post-fix evidence: the 375 × 800 capture shows a clean icon-only rail and unobstructed setup card.
+- Iteration 1 — [P2] Connection-success persistence used a stale state object in two effects. Fix: functional state updates now preserve concurrent field changes while setting signal and broker verification. Post-fix browser evidence: the refreshed production build loads cleanly with no console warnings or errors.
 
 **Open Questions**
 
-- None for MVP validation. Real broker errors, timeout recovery, and credential persistence are intentionally excluded because this build is frontend-only.
+- None for the frontend-only MVP. Production API copy and real credential handling remain backend implementation decisions.
 
 **Implementation Checklist**
 
-- [x] Complete the entire TradingView-to-Binance bot flow.
-- [x] Keep both connection checks non-skippable while running.
-- [x] Show trading permission and explicitly disable withdrawals.
-- [x] Keep Trading, Goals, Risk, and Filters in sequence before review.
-- [x] Require explicit risk acknowledgement before activation.
+- [x] Preserve the exact eight-step execution order.
+- [x] Keep signal, broker, strategy, risk, and activation dependencies non-skippable.
+- [x] Provide visible error states with recoverable retry paths.
+- [x] Provide monitor pause, reconnect, and empty states.
 - [x] Verify desktop and compact layouts.
-- [x] Verify the browser console is clean.
+- [x] Confirm a clean browser console and passing production build.
 
 **Follow-up Polish**
 
-- P3: Add approved exchange logo assets when the production design system supplies them.
-- P3: Add backend-driven error recovery when real integrations enter scope.
+- P3: Add broker-specific logo assets only after an approved production asset set is supplied.
 
 final result: passed
