@@ -17,3 +17,7 @@ The first supplied Windows Codex screenshot is V1: a seven-step Signal → Broke
 This selection supersedes the historical screenshot styling above. Option 2 (Quiet Ledger): white workspace, quiet left navigation, vertical sequence rail, four modules separated by fine rules, and existing configuration drawers. Preserve all existing fields, validation, dependency order, connection simulations, review, activation, monitoring, reset, and demo flows. Use self-hosted Inter typography, orange #fa6838 accents, readable muted text, restrained borders, compact controls, and consistent spacing across every state.
 
 Selected source: `docs/design/selected-refresh.png`.
+
+## Progress alignment refinement — 19 October 2026
+
+Horizontal setup progress uses four equal grid tracks. Center each numbered circle vertically against its label, keep one consistent type size and line height, and use equal circle-to-label spacing. On mobile, center the stacked circles and reserve equal label height so wrapping never changes the alignment. Preserve all setup dependencies and module behavior.

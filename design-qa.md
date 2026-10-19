@@ -44,4 +44,18 @@ Existing model and hosting tests: 3 + 4 per prototype (14 total), passed. No mod
 
 None required for this handoff. Generated mock glyph shapes and subtle optical weights vary slightly from live Inter/Phosphor rendering (P3).
 
+## Incremental progress alignment correction — 19 October 2026
+
+Source: `docs/design/progress-alignment-reference.png` (1246 × 168 screenshot supplied by user, reporting the bug rather than a target to clone).
+Implementation evidence: `docs/design/progress-alignment-tablet.png`, `progress-alignment-mobile.png`, `progress-alignment-desktop.png`.
+Focused combined source/fix comparison: `docs/design/progress-alignment-comparison.png`, opened and inspected. Corrected row scaled proportionally for comparison; full implementation captures remain at 1× CSS density, converted from Display P3 to sRGB.
+
+- [P2 resolved] Horizontal labels aligned to the tops of 26px circles. At 768px, a 15px label line started at the same y position as the circle, leaving the visual centers 5.5px apart.
+- Fix: four equal grid columns; 32px circles; 10px circle-to-label gap; flex cross-axis centering; consistent 12px/18px Inter 600 label typography. Removed conflicting breakpoint overrides.
+- Tablet measurement: all four columns exactly 168px wide at 768px; every number-to-label center delta 0px; every gap 10px.
+- Mobile measurement at 390px: all circles at y=371px; all label blocks at y=413px with 36px reserved height; each label/circle horizontal center delta 0px. Wrapping does not shift any step.
+- Fonts/typography: one 12px/18px label scale, existing self-hosted Inter and weight 600; numerals 12px/600. Spacing/layout: equal tracks and 10px gaps, 20px breathing room before divider. Colors/tokens and supplied assets unchanged. Copy, workflow, and fields unchanged.
+- Desktop vertical presentation and module content remain intact. Browser configuration drawer opens/closes successfully, and console contains no errors or warnings. Build, 3 model tests, 4 hosting tests and diff whitespace checks passed.
+- No remaining actionable P0/P1/P2 findings for this correction.
+
 final result: passed
