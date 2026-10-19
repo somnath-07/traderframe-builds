@@ -1,46 +1,48 @@
 **Findings**
 
-- No actionable P0, P1, or P2 issues remain in the eight-step dependency-wizard prototype.
+- No actionable P0, P1, or P2 findings remain in the recreated single workspace.
+- P3: Windows and macOS font rasterization and some Phosphor outline strokes differ slightly. Original source fonts and hidden screens were not supplied; this is a screenshot-based reconstruction, not a recovered copy of the Windows source.
 
 **Evidence**
 
-- Source visual truth path: `C:\Users\somwo\AppData\Local\Temp\codex-clipboard-534a2a0d-a626-41a0-aef1-4999cb8147d1.png`.
-- Source pixels: 901 × 370. The source is a flow/content specification, not a layout target; the user explicitly requested two different UI styles.
-- Implementation screenshot path/URL: `http://localhost:4174/`, captured in the Codex in-app browser at 1280 × 720 CSS px, device pixel ratio 1.25.
-- Compact implementation evidence: 768 × 900 CSS px in the same browser. No density normalization was required because the comparison judged content and hierarchy rather than pixel-identical layout.
-- State: initial Create Bot step plus a complete interactive run through Monitor Performance.
-- Full-view comparison evidence: the eight source steps appear in the same order as a persistent stepper, with an activation-readiness panel exposing backend dependencies.
-- Focused-region evidence: the stepper, dependency panel, connection checks, field errors, review cards, activation acknowledgement, and monitor failure/empty states were inspected individually. No photographic or branded image assets were required.
-- Primary interactions tested: duplicate name, signal timeout and retry, broker authentication failure and retry, account selection, insufficient balance, invalid risk limits, review, activation failure and retry, pause/resume, reconnect, and empty activity.
-- Browser console: no warnings or errors during the full click-through.
+- Source visual truth: `docs/design/reference.png`, cropped from user screenshot 2. Full attachment: 2750 × 1648 pixels; app content crop: 2119 × 1443 pixels. Codex chat, tabs, browser toolbar, and window controls are excluded.
+- Implementation screenshot: `docs/design/implementation.png`.
+- Combined comparison input: `docs/design/comparison.png`; focused comparison: `docs/design/detail-comparison.png`. Both were opened and visually inspected together.
+- Comparison viewport: 1476 × 1004 CSS px, device pixel ratio 1. Reference app crop normalized to the same dimensions. In-app browser JPEG captures were converted from macOS Display P3 to sRGB for color comparison.
+- State: initial Signal setup, TradingView selected and not connected; downstream dependencies locked.
+- Responsive checks: 390 × 844 and 768 × 1000 CSS px. Document scroll width matched viewport width. Providers, modules, forms, and navigation remain usable.
+- Browser: Codex in-app browser. Fresh final loads returned no browser console errors or warnings.
+- Primary interactions tested: complete manual setup, signal timeout/retry, broker failure/retry, account selection, trading amount validation, goals, risk validation, filters, review, acknowledgement gate, activation failure/retry, pause/resume, disconnect/reconnect, empty activity, reset, and demo loading. Workspace drawers, settings tabs, and activity log were exercised; wizard terminal-provider, debug, and leave/return controls were exercised.
 
 **Required Fidelity Surfaces**
 
-- Fonts and typography: clear sans-serif hierarchy, compact but legible step labels, stable wrapping, and appropriate display/control weights.
-- Spacing and layout rhythm: consistent navigation, stepper, card, and dependency-panel spacing at desktop; compact layout stacks the main card and dependency panel without clipping controls.
-- Colors and visual tokens: off-white workspace, white surfaces, TraderFrame orange actions, muted ink, green success, and red error states remain semantically consistent.
-- Image quality and asset fidelity: the source contains only interface icons; the implementation uses the Phosphor vector icon package and no emoji, placeholder art, CSS drawings, or raster approximations.
-- Copy and content: the exact eight source steps and their required sub-actions are represented, including TradingView/MT4/MT5/Other, broker authentication/account selection, strategy, risk, review, activation, and monitoring.
+- Fonts and typography: matched the reference's compact sans-serif proportions using Arial, with explicit sizes, weights, line heights, and heading tracking. Display and supporting text were compared at readable crop size; remaining cross-platform antialiasing is P3.
+- Spacing and layout: aligned the header, main gutters, content tracks, cards, summary/sidebar, control heights, border radii, and vertical rhythm against the supplied page. V1 uses a horizontal seven-step bar and right summary; V2 uses a 272 px sidebar and stacked modules.
+- Colors and tokens: sampled orange #fa6838, ink #202226, white panels, V1 #f4f5f7 workspace, V2 #f2f3f5 workspace, pale orange selected states, subtle borders, muted text, and disabled module treatment.
+- Image quality and assets: the TF mark and provider monograms are extracted supplied reference assets. Standard interface icons use the existing Phosphor library. There are no missing illustration/image assets, decorative approximations, or generated placeholders.
+- Copy and content: retained all visible app labels and statuses, including the seven sections, demo setup, reset, local-state note, dependency copy, and debug control. Screens not supplied are implemented consistently using local mock interactions.
 
 **Comparison History**
 
-- Iteration 1 — [P2] Connection-success persistence used a stale state object in two effects. Fix: functional state updates now preserve concurrent field changes while setting signal and broker verification. Post-fix browser evidence: the refreshed production build loads cleanly with no console warnings or errors.
+1. P2: initial Arial bold mapping made the wizard heading too heavy, body copy too small, and V2 cards too short. Tested a font alternative, then matched the measured Arial text proportions with an adjusted display weight/scale, larger supporting copy, and explicit module content spacing.
+2. P2: V2's module stack and V1's connection panel rhythm differed by several pixels. Adjusted card padding, instruction spacing, dependency-strip margin, summary track width, and module vertical spacing.
+3. Post-fix evidence: full view and focused comparisons in `docs/design/` show aligned major regions and above-the-fold content. V2 module tops are 232, 482, and 791 CSS px; the first module is 234 px tall. No remaining P0/P1/P2 mismatch was identified.
 
 **Open Questions**
 
-- None for the frontend-only MVP. Production API copy and real credential handling remain backend implementation decisions.
+- Only one page per version was retained. Later setup, review, and monitor screens are reconstructed from the visible design language and frontend demo requirements.
 
 **Implementation Checklist**
 
-- [x] Preserve the exact eight-step execution order.
-- [x] Keep signal, broker, strategy, risk, and activation dependencies non-skippable.
-- [x] Provide visible error states with recoverable retry paths.
-- [x] Provide monitor pause, reconnect, and empty states.
-- [x] Verify desktop and compact layouts.
-- [x] Confirm a clean browser console and passing production build.
+- [x] Recreate the supplied page for this version.
+- [x] Keep the complete setup and monitoring flow interactive.
+- [x] Enforce upstream connection/account dependencies and activation readiness.
+- [x] Preserve Sites-compatible worker/build files.
+- [x] Pass build, three setup-model tests, and four hosting tests.
+- [x] Verify desktop, tablet, phone, and fresh browser loads.
 
 **Follow-up Polish**
 
-- P3: Add broker-specific logo assets only after an approved production asset set is supplied.
+- P3: Original font files or additional Windows screens would allow further matching beyond the supplied raster references.
 
 final result: passed
