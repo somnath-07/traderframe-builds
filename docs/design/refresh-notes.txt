@@ -1,0 +1,14 @@
+Mobbin research and selected visual direction — 19 October 2026
+
+Public website references were inspected during ideation when Mobbin MCP was unavailable:
+Navattic: https://mobbin.com/explore/screens/5b908c10-a485-4dad-9030-37608f9b0c35
+Substack: https://mobbin.com/explore/screens/90db0da6-7974-4e77-9509-51066dab3c0b
+
+Mobbin MCP became available during implementation. Dashboard/setup screen search returned and displayed these previews, which were inspected:
+Gumloop: https://mobbin.com/screens/2ad828f3-aa6f-4511-81a0-b7449b3208ea
+Klaviyo: https://mobbin.com/screens/5ce9e545-398b-48f8-a051-b92fbe30d704
+
+Patterns: quiet grouped navigation, restrained surfaces, legible hierarchy, compact setup grouping, one clear next action. Preserve product workflow rather than copying reference features.
+User selected option 1 for V1 without left navigation; option 2 for V2.
+Asset source: https://github.com/simple-icons/simple-icons/blob/develop/icons/tradingview.svg (CC0 icon collection); existing supplied TF/provider assets; Phosphor icons package.
+Inter source: https://github.com/google/fonts/tree/main/ofl/inter ; license: public/fonts/OFL.txt.

@@ -1,48 +1,47 @@
-**Findings**
+# UI refresh design QA — 19 October 2026
 
-- No actionable P0, P1, or P2 findings remain in the recreated single workspace.
-- P3: Windows and macOS font rasterization and some Phosphor outline strokes differ slightly. Original source fonts and hidden screens were not supplied; this is a screenshot-based reconstruction, not a recovered copy of the Windows source.
+**Source visual truth:** `docs/design/selected-refresh.png` (1487 × 1058 pixels).
+**User selection:** Option 2: Quiet Ledger. Quiet sidebar, sequential status rail, grouped modules with separators, configuration drawers.
+**Implementation:** `docs/design/refresh-implementation.png`.
+**Viewport and density:** 1440 × 1024 CSS px; browser capture 1440 × 1024 pixels, 1×. Source proportionally normalized to 1440 × 1024 for comparison. macOS Display P3 captures converted to sRGB for palette comparison.
+**State:** Initial, unconnected single bot-builder workspace; TradingView / Pepperstone / Momentum Guard defaults.
+**Full-view comparison:** `docs/design/refresh-comparison.png` places source and implementation together.
+**Focused comparison:** `docs/design/refresh-detail.png` compares readable headings, provider identity, controls, surface color, spacing and border treatment.
+**Additional evidence:** `docs/design/refresh-mobile.png`, `refresh-tablet.png`, `refresh-monitor.png`.
 
-**Evidence**
+## Findings and fidelity surfaces
 
-- Source visual truth: `docs/design/reference.png`, cropped from user screenshot 2. Full attachment: 2750 × 1648 pixels; app content crop: 2119 × 1443 pixels. Codex chat, tabs, browser toolbar, and window controls are excluded.
-- Implementation screenshot: `docs/design/implementation.png`.
-- Combined comparison input: `docs/design/comparison.png`; focused comparison: `docs/design/detail-comparison.png`. Both were opened and visually inspected together.
-- Comparison viewport: 1476 × 1004 CSS px, device pixel ratio 1. Reference app crop normalized to the same dimensions. In-app browser JPEG captures were converted from macOS Display P3 to sRGB for color comparison.
-- State: initial Signal setup, TradingView selected and not connected; downstream dependencies locked.
-- Responsive checks: 390 × 844 and 768 × 1000 CSS px. Document scroll width matched viewport width. Providers, modules, forms, and navigation remain usable.
-- Browser: Codex in-app browser. Fresh final loads returned no browser console errors or warnings.
-- Primary interactions tested: complete manual setup, signal timeout/retry, broker failure/retry, account selection, trading amount validation, goals, risk validation, filters, review, acknowledgement gate, activation failure/retry, pause/resume, disconnect/reconnect, empty activity, reset, and demo loading. Workspace drawers, settings tabs, and activity log were exercised; wizard terminal-provider, debug, and leave/return controls were exercised.
+No actionable P0/P1/P2 findings remain.
 
-**Required Fidelity Surfaces**
+- Fonts/typography: self-hosted Inter, 14px base; refined 32px wizard title / 36px workspace title, 500–700 weight hierarchy, compact readable labels and consistent line heights. Body and helper text use cool neutral colors. The supplied TF logo and provider assets remain sharp at intended sizes.
+- Spacing/layout: consistent 8–12px component radii, 24–36px section rhythm, aligned labels and actions, quiet borders and minimal elevation. V1 intentionally retains its wizard forms rather than converting into the mock's four-module process. V2 follows the mock's sidebar/rail/module anatomy and density.
+- Colors/tokens: orange #fa6838, pale orange selected states, near-black #19212f, muted #687588, white and light gray surfaces, green success and restrained error states. Disabled controls use readable gray styling.
+- Asset fidelity: original TraderFrame/provider raster assets reused; TradingView brand mark from Simple Icons; existing Phosphor icon library. No decorative imagery, charts, or additional metrics introduced in setup. Inter font and OFL license included locally.
+- Copy/content: original providers, broker choices, fields, amounts, dependencies, four settings sections and seven-step order preserved. Existing readiness status retained. All prototype simulation disclosures remain.
+- Responsive: 390 × 844 mobile and 768 × 1000 tablet inspected in the Codex in-app browser; no page-level horizontal overflow. Wizard progress scrolls horizontally on smaller screens; V2 sequence becomes horizontal, modules stack, drawers fill mobile width. Debug utility moves into document flow below content at smaller breakpoints.
 
-- Fonts and typography: matched the reference's compact sans-serif proportions using Arial, with explicit sizes, weights, line heights, and heading tracking. Display and supporting text were compared at readable crop size; remaining cross-platform antialiasing is P3.
-- Spacing and layout: aligned the header, main gutters, content tracks, cards, summary/sidebar, control heights, border radii, and vertical rhythm against the supplied page. V1 uses a horizontal seven-step bar and right summary; V2 uses a 272 px sidebar and stacked modules.
-- Colors and tokens: sampled orange #fa6838, ink #202226, white panels, V1 #f4f5f7 workspace, V2 #f2f3f5 workspace, pale orange selected states, subtle borders, muted text, and disabled module treatment.
-- Image quality and assets: the TF mark and provider monograms are extracted supplied reference assets. Standard interface icons use the existing Phosphor library. There are no missing illustration/image assets, decorative approximations, or generated placeholders.
-- Copy and content: retained all visible app labels and statuses, including the seven sections, demo setup, reset, local-state note, dependency copy, and debug control. Screens not supplied are implemented consistently using local mock interactions.
+## Comparison history
 
-**Comparison History**
+1. Initial desktop comparison: [P2] V2 sidebar/type scale differed from selected image; module spacing pushed lower content down and debug overlapped an action. Fixed sidebar width, type hierarchy, module spacing and CTA sizing; moved desktop V2 debug control to navigation footer. Added actual TradingView brand icon. Evidence: `verification/ui-refresh/v2-comparison-pass2.png` at workspace root.
+2. Mobile pass: [P2] V2 header action text clipped at 390px; fixed mobile-specific button typography. [P2] fixed debug widget could cover content; moved utility into flow below content on mobile/tablet. Re-captured and inspected mobile header and full-width signal drawer.
+3. Final: opened and compared both selected images against final implementations together, then focused detail comparisons. Confirmed required typography, layout, color, assets and copy surfaces. V1 no-left-navigation adaptation is intentional. V2 retains readiness pill and utility absent from mock to preserve existing controls. No blocking visual issues.
 
-1. P2: initial Arial bold mapping made the wizard heading too heavy, body copy too small, and V2 cards too short. Tested a font alternative, then matched the measured Arial text proportions with an adjusted display weight/scale, larger supporting copy, and explicit module content spacing.
-2. P2: V2's module stack and V1's connection panel rhythm differed by several pixels. Adjusted card padding, instruction spacing, dependency-strip margin, summary track width, and module vertical spacing.
-3. Post-fix evidence: full view and focused comparisons in `docs/design/` show aligned major regions and above-the-fold content. V2 module tops are 232, 482, and 791 CSS px; the first module is 234 px tall. No remaining P0/P1/P2 mismatch was identified.
+## Interaction and console verification
 
-**Open Questions**
+Both: manual source connection → broker authentication → execution account → Trading → Goals → Risk → Filters → Review → acknowledgement → activation → monitor passed. Demo loading, reset, leave/return and pause/resume passed.
+V2 additionally: simulated source failure/retry, invalid trade amount blocking save, activation failure/retry with setup preserved, reconnect, empty activity and event log passed. Mobile drawer opened and closed with all controls accessible.
+Existing model and hosting tests: 3 + 4 per prototype (14 total), passed. No model changes. Fresh final browser console: no warnings or errors in either prototype.
 
-- Only one page per version was retained. Later setup, review, and monitor screens are reconstructed from the visible design language and frontend demo requirements.
+## Implementation checklist
 
-**Implementation Checklist**
+- [x] Apply selected visual direction and preserve workflows.
+- [x] Compare source and implementation together; fix P2 differences.
+- [x] Inspect focused typography/control details.
+- [x] Verify desktop, tablet, mobile, drawer and monitor states.
+- [x] Verify primary interaction flows and browser console.
 
-- [x] Recreate the supplied page for this version.
-- [x] Keep the complete setup and monitoring flow interactive.
-- [x] Enforce upstream connection/account dependencies and activation readiness.
-- [x] Preserve Sites-compatible worker/build files.
-- [x] Pass build, three setup-model tests, and four hosting tests.
-- [x] Verify desktop, tablet, phone, and fresh browser loads.
+## Follow-up polish
 
-**Follow-up Polish**
-
-- P3: Original font files or additional Windows screens would allow further matching beyond the supplied raster references.
+None required for this handoff. Generated mock glyph shapes and subtle optical weights vary slightly from live Inter/Phosphor rendering (P3).
 
 final result: passed

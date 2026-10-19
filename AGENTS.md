@@ -11,3 +11,9 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 ## Approved design reference — 19 October 2026
 
 The first supplied Windows Codex screenshot is V1: a seven-step Signal → Broker → Trading → Goals → Risk → Filters → Review wizard with a horizontal progress bar and right setup summary. The second is V2: a single workspace with sidebar navigation and stacked Signal Source, Broker, Bot Settings, and Review & Activate modules. Match the app content, not the surrounding Codex chat/browser chrome. Preserve the measured orange (#fa6838), light gray surfaces, Arial typography, spacing, and rounded controls. Reconstruct unseen steps using this same style. Keep both prototypes interactive, local-state-only, and deploy each existing branch to its dedicated existing Vercel project.
+
+## Selected UI refresh — 19 October 2026
+
+This selection supersedes the historical screenshot styling above. Option 2 (Quiet Ledger): white workspace, quiet left navigation, vertical sequence rail, four modules separated by fine rules, and existing configuration drawers. Preserve all existing fields, validation, dependency order, connection simulations, review, activation, monitoring, reset, and demo flows. Use self-hosted Inter typography, orange #fa6838 accents, readable muted text, restrained borders, compact controls, and consistent spacing across every state.
+
+Selected source: `docs/design/selected-refresh.png`.

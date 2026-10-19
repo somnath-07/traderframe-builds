@@ -1,20 +1,15 @@
-TraderFrame V2 — single workspace
+TraderFrame V2 — single bot-builder workspace
 
-Updated 19 October 2026 from the user-supplied Windows screenshots.
-V1 follows screenshot 1 (wizard); V2 follows screenshot 2 (single workspace).
-The legacy branch names are preserved to keep the existing repository and live links.
+Updated 19 October 2026: user-approved UI refresh.
+Option 2: Quiet Ledger. Quiet sidebar, sequential status rail, grouped modules with separators, configuration drawers.
+Visual truth: docs/design/selected-refresh.png
+Comparison, responsive and monitor evidence: docs/design/refresh-*.png
+QA: design-qa.md
 
-Source of visual truth: docs/design/reference.png
-Visual comparison and browser evidence: design-qa.md and docs/design/
+Self-hosted Inter, orange brand accents, restrained surfaces and consistent controls.
+Existing setup processes and rules are preserved. src/model.js is unchanged.
+All interactions use local React state and simulated data; reload resets state.
+No broker credentials or orders are transmitted.
 
-Commands:
-  npm ci
-  npm run dev
-  npm run build
-  npm test
-  npm run test:sites
-
-Vercel: npm ci / npm run build / dist/client.
-All interactions use local React state and simulated data. No broker, trading,
-authentication, or external API requests occur. State resets when the page reloads.
-Hidden screens were reconstructed using the supplied design language.
+Commands: npm ci; npm run dev; npm run build; npm test; npm run test:sites.
+Vercel: npm ci / npm run build / dist/client. Original Sites packaging is intact.
